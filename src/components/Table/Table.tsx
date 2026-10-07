@@ -1,4 +1,5 @@
 import type { PaymentsPage } from "../../pages/PaymentsListPage";
+import { Pagination } from "../Pagination/Pagination";
 import { Row } from "../Row/Row";
 
 export interface TableProps {
@@ -35,25 +36,11 @@ export const Table = ({
 					))}
 				</tbody>
 			</table>
-			<div className="pagination" aria-label="Payment pagination">
-				<button
-					type="button"
-					aria-label="Previous page"
-					disabled={currentPage === 0}
-					onClick={() => onPageChange(currentPage - 1)}
-				>
-					←
-				</button>
-				<span>Page {totalPages === 0 ? 0 : currentPage + 1} of {totalPages}</span>
-				<button
-					type="button"
-					aria-label="Next page"
-					disabled={currentPage + 1 >= totalPages}
-					onClick={() => onPageChange(currentPage + 1)}
-				>
-					→
-				</button>
-			</div>
+			<Pagination
+				currentPage={currentPage}
+				totalPages={totalPages}
+				onPageChange={onPageChange}
+			/>
 		</>
 	)
 };
