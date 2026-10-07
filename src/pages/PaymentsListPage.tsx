@@ -45,6 +45,7 @@ export const PaymentsListPage = () => {
           TableHeaders={TABLE_HEADERS}
           paymentData={payments}
           currentPage={page}
+          // a debounce can be added here to prevent rapid page changes from triggering unnecessary API calls
           onPageChange={setPage}
         />
       ) : (
