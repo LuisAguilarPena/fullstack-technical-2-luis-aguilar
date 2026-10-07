@@ -1,9 +1,9 @@
-import { Table } from '../components/table'
+import { Table } from '../components/Table/Table'
 import { useEffect, useState } from 'react';
 import { listPayments } from '../api/paymentsApi';
 
-// constant for the Table headers
-const TABLE_HEADERS = ['Reference', 'Counterparty', 'Amount', 'Status', 'Created']; 
+// constant for the Table headers, with a large amout of constants it is worth moving them to their own folder
+export const TABLE_HEADERS = ['Reference', 'Counterparty', 'Amount', 'Status', 'Created']; 
 
 // Type for the payments page data returned by the API
 export type PaymentsPage = Awaited<ReturnType<typeof listPayments>>;
