@@ -2,12 +2,15 @@ import { Table } from '../components/table'
 import { useEffect, useState } from 'react';
 import { listPayments } from '../api/paymentsApi';
 
+// constant for the Table headers
+const TABLE_HEADERS = ['Reference', 'Counterparty', 'Amount', 'Status', 'Created']; 
+
 // Type for the payments page data returned by the API
-type PaymentsPage = Awaited<ReturnType<typeof listPayments>>;
+export type PaymentsPage = Awaited<ReturnType<typeof listPayments>>;
 
 // handler to fetch the payments data from the API
 async function listPaymentsHandler(): Promise<PaymentsPage> {
-  return await listPayments();
+  return await listPayments({page: 0, pageSize: 10});
 }
 
 export const PaymentsListPage = () => {
@@ -31,7 +34,7 @@ export const PaymentsListPage = () => {
     <section>
       <h2>Payment queue</h2>
       {payments ? (
-        <Table TableHeaders={['Reference', 'Counterparty', 'Amount', 'Status', 'Created']} />
+        <Table TableHeaders={TABLE_HEADERS} paymentData={payments} />
       ) : (
         <p>Loading payments...</p>
       )}

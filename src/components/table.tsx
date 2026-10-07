@@ -1,9 +1,13 @@
+import { PaymentsPage } from "../pages/PaymentsListPage";
+
 export interface TableProps {
 	TableHeaders: string[];
+	paymentData: PaymentsPage;
 }
 
 export const Table = ({
 	TableHeaders,
+	paymentData,
 }: TableProps) => {
 
   return (
@@ -22,13 +26,17 @@ export const Table = ({
 				</tr>
 			</thead>
 			<tbody>
-				<tr>
-					<th scope="row">INV-2026-0454</th>
-					<td>Sunbelt Fabrication</td>
-					<td>22</td>
-					<td>PENDING</td>
-					<td>1753484365435</td>
-				</tr>
+				{paymentData.rows.map((payment) => (
+					// using the payment reference as a key to uniquely identify each table row
+					// with the unique key react can efficiently update and re-render the table rows when the data changes
+					<tr key={payment.reference}>
+						<td className="reference">{payment.reference}</td>
+						<td className="counterparty">{payment.counterpartyName}</td>
+						<td className="amount_value">{payment.amountMinor}</td>
+						<td className="status">{payment.status}</td>
+						<td className="created">{payment.createdAt}</td>
+					</tr>
+				))}
 			</tbody>
 		</table>
 	)
