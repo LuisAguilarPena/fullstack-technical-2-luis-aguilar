@@ -5,7 +5,7 @@ import { Search } from '../components/Search/Search';
 import { useEffect, useRef, useState } from 'react';
 import { listPayments } from '../api/paymentsApi';
 
-// constant for the Table headers, with a large amout of constants it is worth moving them to their own folder
+//TODO constant for the Table headers, with a large amout of constants it is worth moving them to their own folder
 export const TABLE_HEADERS = ['Reference', 'Counterparty', 'Amount', 'Status', 'Created']; 
 
 // Type for the payments page data returned by the API
@@ -13,18 +13,17 @@ export type PaymentsPage = Awaited<ReturnType<typeof listPayments>>;
 
 // handler to fetch the payments data from the API
 async function listPaymentsHandler(page: number, query: string): Promise<PaymentsPage> {
-  // hardcoding the page size to 10 for simplicity, but similarly to page this can be made configurable
+  //TODO hardcoding the page size to 10 for simplicity, but similarly to page this can be made configurable
   return await listPayments({ q: query, page, pageSize: 10 });
 }
 
 export const PaymentsListPage = () => {
-  // Established state variables to hold the payments and page data fetched from the API
-  // this way we can keep track of the payments data and re-render the components when it changes
+  //? Established state variables to hold the payments and page data fetched from the API this way we can keep track of the payments data and re-render the components when it changes
   const [payments, setPayments] = useState<PaymentsPage | null>(null);
   const searchDebounce = useRef<ReturnType<typeof setTimeout> | null>(null);
   // inferred types below, no need to explicitly declare them
   const [page, setPage] = useState(0);
-  // other improvements to the search experience can be: adding a clear button, sanitizing input, highlighting matches, etc.
+  //TODO other improvements to the search experience can be: adding a clear button, sanitizing input, highlighting matches, etc.
   const [searchQuery, setSearchQuery] = useState('');
   const [searchInput, setSearchInput] = useState('');
 
@@ -33,7 +32,7 @@ export const PaymentsListPage = () => {
   }, []);
 
   // Effect to fetch payments data whenever the page changes
-  // In production, this can be replaced with a more sophisticated data fetching strategy, such as React Query
+  //? In production, this can be replaced with a more sophisticated data fetching strategy, such as React Query
   useEffect(() => {
     let isCurrentRequest = true;
 

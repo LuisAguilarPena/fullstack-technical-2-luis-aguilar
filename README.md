@@ -134,3 +134,12 @@ If you'd rather write your own, go ahead — just don't spend the clock on it.
   with what's installed: React 19, React Router, React Query, TypeScript, Vitest + RTL.
 - Use whatever editor and docs you like. Please don't use an AI coding assistant for this one —
   we want to see how you think, and you'll be reviewing a lot of AI-written code in this role.
+
+## Notes on the Implementation
+App component were created with accessibility and maintainability in mind. Tested keyboard navigation and screen reader support, using NVDA reader for verification and adding appropriate ARIA attributes where necessary.
+
+Added a prefixed code for comments explaining the purpose and behavior of different features.
+- `//?` to indicate explanatory architectural notes rather than regular comments.
+- `//` for regular comments in the code.
+- `//!` for important notes or warnings in the code.
+- `//TODO` for marking improvements in the code.
