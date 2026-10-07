@@ -1,5 +1,5 @@
-import { render, screen, within } from '@testing-library/react';
-import { describe, expect, it } from 'vitest';
+import { fireEvent, render, screen, within } from '@testing-library/react';
+import { describe, expect, it, vi } from 'vitest';
 
 import type { Payment } from '../../types/payment';
 import { TABLE_HEADERS } from '../../pages/PaymentsListPage';
@@ -36,6 +36,8 @@ describe('Table', () => {
       <Table
         TableHeaders={TABLE_HEADERS}
         paymentData={{ rows, page: 0, pageSize: 10, totalCount: rows.length }}
+        currentPage={0}
+        onPageChange={vi.fn()}
       />,
     );
 
@@ -49,5 +51,36 @@ describe('Table', () => {
       expect(within(renderedRows[index]).getAllByRole('cell')[1])
         .toHaveTextContent(expectedPayment.counterpartyName);
     });
+  });
+
+  it('navigates between pages and disables arrows at the boundaries', () => {
+    const onPageChange = vi.fn();
+    const paymentData = { rows: payments, page: 0, pageSize: 10, totalCount: 25 };
+    const { rerender } = render(
+      <Table
+        TableHeaders={TABLE_HEADERS}
+        paymentData={paymentData}
+        currentPage={0}
+        onPageChange={onPageChange}
+      />,
+    );
+
+    const previousButton = screen.getByRole('button', { name: 'Previous page' });
+    const nextButton = screen.getByRole('button', { name: 'Next page' });
+    expect(previousButton).toBeDisabled();
+    expect(nextButton).toBeEnabled();
+    fireEvent.click(nextButton);
+    expect(onPageChange).toHaveBeenCalledWith(1);
+
+    rerender(
+      <Table
+        TableHeaders={TABLE_HEADERS}
+        paymentData={{ ...paymentData, page: 2 }}
+        currentPage={2}
+        onPageChange={onPageChange}
+      />,
+    );
+    expect(screen.getByRole('button', { name: 'Previous page' })).toBeEnabled();
+    expect(screen.getByRole('button', { name: 'Next page' })).toBeDisabled();
   });
 });
