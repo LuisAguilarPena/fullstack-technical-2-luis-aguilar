@@ -1,5 +1,8 @@
+//? The logic in this page component revolves around fetching and manipulating data and managing the state for the nested components. This pattern leaves the responsibility of only rendering the UI to the nested components. This can help keep the components modular and easier to maintain, but at the cost of a more complex page component.
+
 import { Table } from '../components/Table/Table'
-import { useEffect, useState } from 'react';
+import { Search } from '../components/Search/Search';
+import { useEffect, useRef, useState } from 'react';
 import { listPayments } from '../api/paymentsApi';
 
 // constant for the Table headers, with a large amout of constants it is worth moving them to their own folder
@@ -9,17 +12,25 @@ export const TABLE_HEADERS = ['Reference', 'Counterparty', 'Amount', 'Status', '
 export type PaymentsPage = Awaited<ReturnType<typeof listPayments>>;
 
 // handler to fetch the payments data from the API
-async function listPaymentsHandler(page: number): Promise<PaymentsPage> {
+async function listPaymentsHandler(page: number, query: string): Promise<PaymentsPage> {
   // hardcoding the page size to 10 for simplicity, but similarly to page this can be made configurable
-  return await listPayments({ page, pageSize: 10 });
+  return await listPayments({ q: query, page, pageSize: 10 });
 }
 
 export const PaymentsListPage = () => {
   // Established state variables to hold the payments and page data fetched from the API
   // this way we can keep track of the payments data and re-render the components when it changes
   const [payments, setPayments] = useState<PaymentsPage | null>(null);
-  // inferred type will be number, no need to explicitly declare it
+  const searchDebounce = useRef<ReturnType<typeof setTimeout> | null>(null);
+  // inferred types below, no need to explicitly declare them
   const [page, setPage] = useState(0);
+  // other improvements to the search experience can be: adding a clear button, sanitizing input, highlighting matches, etc.
+  const [searchQuery, setSearchQuery] = useState('');
+  const [searchInput, setSearchInput] = useState('');
+
+  useEffect(() => () => {
+    if (searchDebounce.current !== null) clearTimeout(searchDebounce.current);
+  }, []);
 
   // Effect to fetch payments data whenever the page changes
   // In production, this can be replaced with a more sophisticated data fetching strategy, such as React Query
@@ -28,24 +39,34 @@ export const PaymentsListPage = () => {
 
     const fetchPayments = async () => {
       // setPayments with the fetched payments data
-      const result = await listPaymentsHandler(page);
+      const result = await listPaymentsHandler(page, searchQuery);
       if (isCurrentRequest) setPayments(result);
     };
     fetchPayments();
     return () => { // clean up the current request flag to prevent setting state on an unmounted component
       isCurrentRequest = false;
     };
-  }, [page]); // whenever page changes we re-fetch the payments data with the new page number
+  }, [page, searchQuery]); // page or search changes trigger a new paginated request
+
+  const handleSearchChange = (query: string) => {
+    setSearchInput(query); //? Update the local search input state immediately for a responsive UI, while the actual search query is debounced to prevent excessive API calls.
+    if (searchDebounce.current !== null) clearTimeout(searchDebounce.current);
+    searchDebounce.current = setTimeout(() => {
+      setSearchQuery(query);
+      setPage(0);
+    }, 200);
+  };
 
   return (
     <section>
       <h2>Payment queue</h2>
+      <Search value={searchInput} onSearchChange={handleSearchChange} />
       {payments ? (
         <Table
           TableHeaders={TABLE_HEADERS}
           paymentData={payments}
           currentPage={page}
-          // a debounce can be added here to prevent rapid page changes from triggering unnecessary API calls
+          //TODO a debounce can be added to the onPageChange handler to prevent rapid consecutive requests, similar to the search debounce
           onPageChange={setPage}
         />
       ) : (

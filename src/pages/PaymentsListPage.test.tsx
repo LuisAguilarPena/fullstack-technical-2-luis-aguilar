@@ -22,12 +22,13 @@ describe('PaymentsListPage pagination', () => {
     render(<PaymentsListPage />);
 
     await screen.findByText('Page 1 of 3');
-    expect(listPaymentsMock).toHaveBeenNthCalledWith(1, { page: 0, pageSize: 10 });
+    expect(listPaymentsMock).toHaveBeenNthCalledWith(1, { q: '', page: 0, pageSize: 10 });
 
     fireEvent.click(screen.getByRole('button', { name: 'Next page' }));
 
     await waitFor(() => {
-      expect(listPaymentsMock).toHaveBeenNthCalledWith(2, { page: 1, pageSize: 10 });
+      expect(listPaymentsMock).toHaveBeenNthCalledWith(2, { q: '', page: 1, pageSize: 10 });
     });
   });
+
 });
