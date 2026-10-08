@@ -1,4 +1,5 @@
 import { render, screen, within } from '@testing-library/react';
+import { MemoryRouter } from 'react-router-dom';
 import { describe, expect, it } from 'vitest';
 
 import type { Payment } from '../../types/payment';
@@ -26,11 +27,13 @@ const payment: Payment = {
 describe('Row', () => {
   it('renders the five payment cells in order', () => {
     render(
+    <MemoryRouter>
       <table>
         <tbody>
           <Row payment={payment} />
         </tbody>
-      </table>,
+      </table>
+    </MemoryRouter>,
     );
 
     const cells = within(screen.getByRole('row')).getAllByRole('cell');
@@ -41,6 +44,10 @@ describe('Row', () => {
     expect(cells[2]).toHaveTextContent('$1,250.00');
     expect(cells[3]).toHaveTextContent(/^PENDING$/);
     expect(cells[4]).toHaveTextContent(/^2026-10-07T12:00:00Z$/);
+    expect(within(screen.getByRole('row')).getAllByRole('link')).toHaveLength(5);
+    within(screen.getByRole('row')).getAllByRole('link').forEach((link) => {
+      expect(link).toHaveAttribute('href', '/payments/payment-1');
+    });
   });
 
   it.each([
@@ -50,11 +57,13 @@ describe('Row', () => {
     ['BHD', 263844996, /BHD\s263,844\.996/],
   ] as const)('formats %s amounts in their currency', (currency, amountMinor, expected) => {
     render(
+    <MemoryRouter>
       <table>
         <tbody>
           <Row payment={{ ...payment, currency, amountMinor }} />
         </tbody>
-      </table>,
+      </table>
+    </MemoryRouter>,
     );
 
     expect(within(screen.getByRole('row')).getAllByRole('cell')[2])

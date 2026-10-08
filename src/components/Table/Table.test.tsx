@@ -1,4 +1,5 @@
 import { render, screen, within } from '@testing-library/react';
+import { MemoryRouter } from 'react-router-dom';
 import { describe, expect, it, vi } from 'vitest';
 
 import type { Payment } from '../../types/payment';
@@ -33,6 +34,7 @@ describe('Table', () => {
   it.each([0, 1, 2])('renders %i payment rows without counting the header', (count) => {
     const rows = payments.slice(0, count);
     render(
+    <MemoryRouter>
       <Table
         TableHeaders={TABLE_HEADERS}
         paymentData={{ rows, page: 0, pageSize: 10, totalCount: rows.length }}
@@ -40,7 +42,8 @@ describe('Table', () => {
         onPageChange={vi.fn()}
         counterpartySort={null}
         onCounterpartySort={vi.fn()}
-      />,
+      />
+    </MemoryRouter>,
     );
 
     const table = screen.getByRole('table');

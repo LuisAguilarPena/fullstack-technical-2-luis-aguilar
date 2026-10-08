@@ -65,7 +65,7 @@ export const PaymentsListPage = () => {
       const result = await listPaymentsHandler(page, searchQuery, status, counterpartySort);
       if (isCurrentRequest) setPayments(result);
     };
-    fetchPayments();
+    void fetchPayments();
     return () => { // clean up the current request flag to prevent setting state on an unmounted component
       isCurrentRequest = false;
     };
