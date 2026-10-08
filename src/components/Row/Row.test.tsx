@@ -38,8 +38,26 @@ describe('Row', () => {
     expect(cells).toHaveLength(5);
     expect(cells[0]).toHaveTextContent(/^INV-2026-0454$/);
     expect(cells[1]).toHaveTextContent(/^Sunbelt Fabrication$/);
-    expect(cells[2]).toHaveTextContent(/^125000$/);
+    expect(cells[2]).toHaveTextContent('$1,250.00');
     expect(cells[3]).toHaveTextContent(/^PENDING$/);
     expect(cells[4]).toHaveTextContent(/^2026-10-07T12:00:00Z$/);
+  });
+
+  it.each([
+    ['EUR', 24331228, '€243,312.28'],
+    ['GBP', 17810010, '£178,100.10'],
+    ['JPY', 312006, '¥312,006'],
+    ['BHD', 263844996, /BHD\s263,844\.996/],
+  ] as const)('formats %s amounts in their currency', (currency, amountMinor, expected) => {
+    render(
+      <table>
+        <tbody>
+          <Row payment={{ ...payment, currency, amountMinor }} />
+        </tbody>
+      </table>,
+    );
+
+    expect(within(screen.getByRole('row')).getAllByRole('cell')[2])
+      .toHaveTextContent(expected);
   });
 });
