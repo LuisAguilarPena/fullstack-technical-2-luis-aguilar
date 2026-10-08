@@ -157,3 +157,4 @@ It’s particularly useful for things like:
   - ARIA attributes for accessibility
   - Avoiding duplicate IDs in dynamic UI structures
 - The table component was implemented from scratch, ensuring full control over its structure, styling, and behavior, while maintaining accessibility and responsiveness. Another good alternative would be to use a pre-built table component from a UI library, or stand-alone table like TanStack Table (formerly React Table).
+- We need to ensure that moving back using the history (browser back button) works correctly and maintains the expected state of the application or navigates to the appropriate previous page and triggers any necessary data fetching or UI updates.
