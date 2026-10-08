@@ -154,7 +154,7 @@ Other enhancements that can be made include:
 - Enhancing error handling to provide better feedback to the user in case of network or server errors.
 - Leverage useId() built-in hook that generates unique, consistent IDs for components.
 It’s particularly useful for things like:
-  - Linking <label>s to <input>s
+  - Linking labels to inputs
   - ARIA attributes for accessibility
   - Avoiding duplicate IDs in dynamic UI structures
 - The table component was implemented from scratch, ensuring full control over its structure, styling, and behavior, while maintaining accessibility and responsiveness. Another good alternative would be to use a pre-built table component from a UI library, or stand-alone table like TanStack Table (formerly React Table).
