@@ -3,7 +3,7 @@
 import { Table } from '../components/Table/Table'
 import { Search } from '../components/Search/Search';
 import { useEffect, useRef, useState } from 'react';
-import { listPayments } from '../api/paymentsApi';
+import { listPayments, type SortDirection } from '../api/paymentsApi';
 
 //TODO constant for the Table headers, with a large amout of constants it is worth moving them to their own folder
 export const TABLE_HEADERS = ['Reference', 'Counterparty', 'Amount', 'Status', 'Created']; 
@@ -12,9 +12,22 @@ export const TABLE_HEADERS = ['Reference', 'Counterparty', 'Amount', 'Status', '
 export type PaymentsPage = Awaited<ReturnType<typeof listPayments>>;
 
 // handler to fetch the payments data from the API
-async function listPaymentsHandler(page: number, query: string): Promise<PaymentsPage> {
+async function listPaymentsHandler(
+  page: number,
+  query: string,
+  // Sort direction for the counterparty column, can be 'asc', 'desc', or null for no sorting
+  counterpartySort: SortDirection | null,
+): Promise<PaymentsPage> {
   //TODO hardcoding the page size to 10 for simplicity, but similarly to page this can be made configurable
-  return await listPayments({ q: query, page, pageSize: 10 });
+  const params = { q: query, page, pageSize: 10 };
+  if (counterpartySort) {
+    return listPayments({
+      ...params,
+      sort: 'counterpartyName',
+      direction: counterpartySort,
+    });
+  }
+  return listPayments(params);
 }
 
 export const PaymentsListPage = () => {
@@ -23,6 +36,7 @@ export const PaymentsListPage = () => {
   const searchDebounce = useRef<ReturnType<typeof setTimeout> | null>(null);
   // inferred types below, no need to explicitly declare them
   const [page, setPage] = useState(0);
+  const [counterpartySort, setCounterpartySort] = useState<SortDirection | null>(null);
   //TODO other improvements to the search experience can be: adding a clear button, sanitizing input, highlighting matches, etc.
   const [searchQuery, setSearchQuery] = useState('');
   const [searchInput, setSearchInput] = useState('');
@@ -38,14 +52,14 @@ export const PaymentsListPage = () => {
 
     const fetchPayments = async () => {
       // setPayments with the fetched payments data
-      const result = await listPaymentsHandler(page, searchQuery);
+      const result = await listPaymentsHandler(page, searchQuery, counterpartySort);
       if (isCurrentRequest) setPayments(result);
     };
     fetchPayments();
     return () => { // clean up the current request flag to prevent setting state on an unmounted component
       isCurrentRequest = false;
     };
-  }, [page, searchQuery]); // page or search changes trigger a new paginated request
+  }, [page, searchQuery, counterpartySort]); // page, search, or sort changes trigger a new request
 
   const handleSearchChange = (query: string) => {
     setSearchInput(query); //? Update the local search input state immediately for a responsive UI, while the actual search query is debounced to prevent excessive API calls.
@@ -54,6 +68,14 @@ export const PaymentsListPage = () => {
       setSearchQuery(query);
       setPage(0);
     }, 200);
+  };
+
+  const handleCounterpartySort = () => {
+    setCounterpartySort((currentSort) =>
+      // order is A-Z -> Z-A -> unsorted
+      currentSort === 'asc' ? 'desc' : currentSort === 'desc' ? null : 'asc',
+    );
+    setPage(0);
   };
 
   return (
@@ -67,6 +89,8 @@ export const PaymentsListPage = () => {
           currentPage={page}
           //TODO a debounce can be added to the onPageChange handler to prevent rapid consecutive requests, similar to the search debounce
           onPageChange={setPage}
+          counterpartySort={counterpartySort}
+          onCounterpartySort={handleCounterpartySort}
         />
       ) : (
         <p>Loading payments...</p>

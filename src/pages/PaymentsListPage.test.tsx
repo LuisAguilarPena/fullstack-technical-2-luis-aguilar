@@ -31,4 +31,38 @@ describe('PaymentsListPage pagination', () => {
     });
   });
 
+  it('cycles counterparty sorting from A-Z to Z-A to unsorted', async () => {
+    render(<PaymentsListPage />);
+
+    await screen.findByText('Page 1 of 3');
+    fireEvent.click(screen.getByRole('button', { name: 'Sort counterparty A to Z' }));
+    await waitFor(() => {
+      expect(listPaymentsMock).toHaveBeenLastCalledWith({
+        q: '',
+        page: 0,
+        pageSize: 10,
+        sort: 'counterpartyName',
+        direction: 'asc',
+      });
+    });
+
+    fireEvent.click(screen.getByRole('button', { name: 'Sort counterparty Z to A' }));
+    await waitFor(() => {
+      expect(listPaymentsMock).toHaveBeenLastCalledWith({
+        q: '',
+        page: 0,
+        pageSize: 10,
+        sort: 'counterpartyName',
+        direction: 'desc',
+      });
+    });
+
+    fireEvent.click(screen.getByRole('button', { name: 'Clear counterparty sorting' }));
+    await waitFor(() => {
+      expect(listPaymentsMock).toHaveBeenLastCalledWith({ q: '', page: 0, pageSize: 10 });
+    });
+    expect(screen.getByRole('columnheader', { name: /Counterparty/ }))
+      .not.toHaveAttribute('aria-sort');
+  });
+
 });

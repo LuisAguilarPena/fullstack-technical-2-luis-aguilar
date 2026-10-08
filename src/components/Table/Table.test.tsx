@@ -38,6 +38,8 @@ describe('Table', () => {
         paymentData={{ rows, page: 0, pageSize: 10, totalCount: rows.length }}
         currentPage={0}
         onPageChange={vi.fn()}
+        counterpartySort={null}
+        onCounterpartySort={vi.fn()}
       />,
     );
 
