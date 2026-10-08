@@ -98,7 +98,11 @@ export const PaymentsListPage = () => {
       <h2>Payment queue</h2>
       <Search value={searchInput} onSearchChange={handleSearchChange} />
       <Filter value={status} onStatusChange={handleStatusChange} />
-      {payments ? (
+      {payments === null ? (
+        <p>Loading payments...</p>
+      ) : payments.totalCount === 0 ? (
+        <p className="state">No payments found.</p>
+      ) : (
         <Table
           TableHeaders={TABLE_HEADERS}
           paymentData={payments}
@@ -108,8 +112,6 @@ export const PaymentsListPage = () => {
           counterpartySort={counterpartySort}
           onCounterpartySort={handleCounterpartySort}
         />
-      ) : (
-        <p>Loading payments...</p>
       )}
     </section>
   );

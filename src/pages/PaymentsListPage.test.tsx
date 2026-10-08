@@ -88,4 +88,18 @@ describe('PaymentsListPage pagination', () => {
     });
   });
 
+  it('shows an empty state when the fetch returns no payments', async () => {
+    listPaymentsMock.mockResolvedValueOnce({
+      rows: [],
+      page: 0,
+      pageSize: 10,
+      totalCount: 0,
+    });
+
+    render(<PaymentsListPage />);
+
+    expect(await screen.findByText('No payments found.')).toBeInTheDocument();
+    expect(screen.queryByRole('table')).not.toBeInTheDocument();
+  });
+
 });
