@@ -42,6 +42,7 @@ async function listPaymentsHandler(
 export const PaymentsListPage = () => {
   //? Established state variables to hold the payments and page data fetched from the API this way we can keep track of the payments data and re-render the components when it changes
   const [payments, setPayments] = useState<PaymentsPage | null>(null);
+  const [error, setError] = useState<string | null>(null);
   const searchDebounce = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [counterpartySort, setCounterpartySort] = useState<SortDirection | null>(null);
   const [status, setStatus] = useState<PaymentStatus | ''>('');
@@ -61,9 +62,18 @@ export const PaymentsListPage = () => {
     let isCurrentRequest = true;
 
     const fetchPayments = async () => {
-      // setPayments with the fetched payments data
-      const result = await listPaymentsHandler(page, searchQuery, status, counterpartySort);
-      if (isCurrentRequest) setPayments(result);
+      try {
+        const result = await listPaymentsHandler(page, searchQuery, status, counterpartySort);
+        if (isCurrentRequest) {
+          setPayments(result);
+          setError(null);
+        }
+      } catch (error) {
+        if (isCurrentRequest) {
+          setError(error instanceof Error ? error.message : 'Failed to fetch payments.');
+          console.error('Failed to fetch payments:', error);
+        }
+      }
     };
     void fetchPayments();
     return () => { // clean up the current request flag to prevent setting state on an unmounted component
@@ -98,7 +108,9 @@ export const PaymentsListPage = () => {
       <h2>Payment queue</h2>
       <Search value={searchInput} onSearchChange={handleSearchChange} />
       <Filter value={status} onStatusChange={handleStatusChange} />
-      {payments === null ? (
+      {error ? (
+        <p className="state error" role="alert">{error}</p>
+      ) : payments === null ? (
         <p>Loading payments...</p>
       ) : payments.totalCount === 0 ? (
         <p className="state">No payments found.</p>

@@ -102,4 +102,16 @@ describe('PaymentsListPage pagination', () => {
     expect(screen.queryByRole('table')).not.toBeInTheDocument();
   });
 
+  it('shows an error state when fetching payments fails', async () => {
+    const error = new Error('Unable to load payments');
+    listPaymentsMock.mockRejectedValueOnce(error);
+    const errorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+
+    render(<PaymentsListPage />);
+
+    expect(await screen.findByRole('alert')).toHaveTextContent('Unable to load payments');
+    expect(errorSpy).toHaveBeenCalledWith('Failed to fetch payments:', error);
+    errorSpy.mockRestore();
+  });
+
 });
