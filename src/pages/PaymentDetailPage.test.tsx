@@ -1,5 +1,5 @@
 import { render, screen, waitFor } from '@testing-library/react';
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
 
 import type { Payment } from '../types/payment';
@@ -35,13 +35,7 @@ describe('PaymentDetailPage', () => {
     getPaymentMock.mockResolvedValue(payment);
   });
 
-  afterEach(() => {
-    vi.restoreAllMocks();
-  });
-
-  it('fetches the payment from the route parameter and logs the response', async () => {
-    const logSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
-
+  it('fetches the payment from the route parameter and renders the response', async () => {
     render(
       <MemoryRouter initialEntries={['/payments/payment-1']}>
         <Routes>
@@ -55,7 +49,8 @@ describe('PaymentDetailPage', () => {
 
     await waitFor(() => {
       expect(getPaymentMock).toHaveBeenCalledWith('payment-1');
-      expect(logSpy).toHaveBeenCalledWith('Fetched payment:', payment);
     });
+    expect(screen.getByText('Sunbelt Fabrication')).toBeInTheDocument();
+    expect(screen.getByText('021000021')).toBeInTheDocument();
   });
 });
