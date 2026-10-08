@@ -13,7 +13,7 @@ const payment: Payment = {
   amountMinor: 125000,
   currency: 'USD',
   status: 'PENDING',
-  createdAt: '2026-10-07T12:00:00Z',
+  createdAt: '2026-10-07T12:00:00.000Z',
   settledAt: null,
   method: {
     kind: 'ach',
@@ -43,7 +43,7 @@ describe('Row', () => {
     expect(cells[1]).toHaveTextContent(/^Sunbelt Fabrication$/);
     expect(cells[2]).toHaveTextContent('$1,250.00');
     expect(cells[3]).toHaveTextContent(/^PENDING$/);
-    expect(cells[4]).toHaveTextContent(/^2026-10-07T12:00:00Z$/);
+    expect(cells[4]).toHaveTextContent(/^2026-10-07T12:00:00$/);
     expect(within(screen.getByRole('row')).getAllByRole('link')).toHaveLength(5);
     within(screen.getByRole('row')).getAllByRole('link').forEach((link) => {
       expect(link).toHaveAttribute('href', '/payments/payment-1');

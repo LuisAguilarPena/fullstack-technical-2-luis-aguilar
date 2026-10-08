@@ -33,7 +33,7 @@ export const Row = ({ payment }: RowProps) => {
 			</td>
 			<td className="created">
 				<Link className="cellLink" to={generatePath('/payments/:paymentId', { paymentId: payment.id })}>
-					{payment.createdAt}
+					{payment.createdAt.slice(0, -5)}
 				</Link>
 			</td>
 		</tr>

@@ -22,12 +22,12 @@ export const PaymentDetails = ({ payment }: PaymentDetailsProps) => (
 				<DetailField label="Status" value={payment.status} />
 				<DetailField
 					label="Created at"
-					value={<time dateTime={payment.createdAt}>{payment.createdAt}</time>}
+					value={<time dateTime={payment.createdAt}>{payment.createdAt.slice(0, -5)}</time>}
 				/>
 				<DetailField
 					label="Settled at"
 					value={payment.settledAt
-						? <time dateTime={payment.settledAt}>{payment.settledAt}</time>
+						? <time dateTime={payment.settledAt}>{payment.settledAt.slice(0, -5)}</time>
 						: 'Not settled'}
 				/>
 				<DetailField label="Failure reason" value={payment.failureReason ?? 'None'} />

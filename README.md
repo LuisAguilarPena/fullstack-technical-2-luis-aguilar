@@ -135,8 +135,8 @@ If you'd rather write your own, go ahead — just don't spend the clock on it.
 - Use whatever editor and docs you like. Please don't use an AI coding assistant for this one —
   we want to see how you think, and you'll be reviewing a lot of AI-written code in this role.
 
-## Notes on the Implementation
-App component were created with accessibility and maintainability in mind. Tested keyboard navigation and screen reader support, using NVDA reader for verification and adding appropriate ARIA attributes where necessary.
+## Notes about the Implementation
+App components were created with accessibility and maintainability in mind. Tested keyboard navigation and screen reader support, using NVDA reader for verification and adding appropriate ARIA attributes where necessary.
 
 Added a prefixed code for comments explaining the purpose and behavior of different features.
 - `//?` to indicate explanatory architectural notes rather than regular comments.
@@ -147,6 +147,7 @@ Added a prefixed code for comments explaining the purpose and behavior of differ
 Other enhancements that can be made include:
 - Sorting by other columns besides counterparty
 - Formatting the Created date column to a more human-readable format, we can use the Date object and its methods or a library like date-fns or moment.js.
+  - Currently, I am just trimming the last 5 characters from the ISO date string to remove the milliseconds and the 'Z' at the end. This assumes that the date string is always in the ISO 8601 format with milliseconds and a 'Z' suffix.
 - Adding pagination controls to improve navigation through large sets of payments.
 - Implementing debounce for the search input to reduce the number of API calls and improve performance.
 - Adding client-side caching to avoid refetching data that has already been retrieved, which can be achieved using libraries like React Query or by implementing a custom caching mechanism.
@@ -158,3 +159,6 @@ It’s particularly useful for things like:
   - Avoiding duplicate IDs in dynamic UI structures
 - The table component was implemented from scratch, ensuring full control over its structure, styling, and behavior, while maintaining accessibility and responsiveness. Another good alternative would be to use a pre-built table component from a UI library, or stand-alone table like TanStack Table (formerly React Table).
 - We need to ensure that moving back using the history (browser back button) works correctly and maintains the expected state of the application or navigates to the appropriate previous page and triggers any necessary data fetching or UI updates.
+- Responsiveness considerations have not been applied, meaning the UI may not adapt well to different screen sizes or devices.
+  - After testing, the table might not display correctly on smaller screens, less than 768px in width, and horizontal scrolling may be required to view all columns.
+- No styles have been applied from my side, meaning the UI relies entirely on default browser styles and what has been provided initially.
