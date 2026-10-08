@@ -65,4 +65,27 @@ describe('PaymentsListPage pagination', () => {
       .not.toHaveAttribute('aria-sort');
   });
 
+  it('filters by status and resets pagination to the first page', async () => {
+    render(<PaymentsListPage />);
+
+    await screen.findByText('Page 1 of 3');
+    fireEvent.click(screen.getByRole('button', { name: 'Next page' }));
+    await waitFor(() => {
+      expect(listPaymentsMock).toHaveBeenLastCalledWith({ q: '', page: 1, pageSize: 10 });
+    });
+
+    fireEvent.change(screen.getByRole('combobox', { name: 'Filter by status' }), {
+      target: { value: 'FAILED' },
+    });
+
+    await waitFor(() => {
+      expect(listPaymentsMock).toHaveBeenLastCalledWith({
+        q: '',
+        page: 0,
+        pageSize: 10,
+        status: 'FAILED',
+      });
+    });
+  });
+
 });
