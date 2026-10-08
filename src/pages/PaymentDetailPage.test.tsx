@@ -1,4 +1,4 @@
-import { render, waitFor } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
 
@@ -49,6 +49,9 @@ describe('PaymentDetailPage', () => {
         </Routes>
       </MemoryRouter>,
     );
+
+    expect(screen.getByRole('link', { name: /back to payments/i }))
+      .toHaveAttribute('href', '/payments');
 
     await waitFor(() => {
       expect(getPaymentMock).toHaveBeenCalledWith('payment-1');
