@@ -143,3 +143,17 @@ Added a prefixed code for comments explaining the purpose and behavior of differ
 - `//` for regular comments in the code.
 - `//!` for important notes or warnings in the code.
 - `//TODO` for marking improvements in the code.
+
+Other enhancements that can be made include:
+- Sorting by other columns besides counterparty
+- Formatting the Created date column to a more human-readable format, we can use the Date object and its methods or a library like date-fns or moment.js.
+- Adding pagination controls to improve navigation through large sets of payments.
+- Implementing debounce for the search input to reduce the number of API calls and improve performance.
+- Adding client-side caching to avoid refetching data that has already been retrieved, which can be achieved using libraries like React Query or by implementing a custom caching mechanism.
+- Enhancing error handling to provide better feedback to the user in case of network or server errors.
+- Leverage useId() built-in hook that generates unique, consistent IDs for components.
+It’s particularly useful for things like:
+  - Linking <label>s to <input>s
+  - ARIA attributes for accessibility
+  - Avoiding duplicate IDs in dynamic UI structures
+- The table component was implemented from scratch, ensuring full control over its structure, styling, and behavior, while maintaining accessibility and responsiveness. Another good alternative would be to use a pre-built table component from a UI library, or stand-alone table like TanStack Table (formerly React Table).
